@@ -12,12 +12,16 @@ import java.util.Optional;
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -27,7 +31,13 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveDrivePoseEstimator poseEstimator;
     public SwerveModule[] mSwerveMods;
+    private final PIDController m_YController;
+   // private DriverStation m_driverStation;
+    private DriverStation.Alliance allianceColor;
     public Pigeon2 gyro;
+   private double KpAim = -0.1;
+    private double KpDistance = -0.1;
+    private double min_aim_command = 0.05;
 
   // private static final edu.wpi.first.math.Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
 
@@ -38,6 +48,18 @@ public class Swerve extends SubsystemBase {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.configFactoryDefault();
         zeroGyro();
+
+
+
+         allianceColor = DriverStation.getAlliance();
+
+         SmartDashboard.putString("Alliance Color", allianceColor.toString());
+
+
+        m_YController = new PIDController(.005, 0, 0);
+
+         m_YController.setTolerance(0.05);
+  
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -67,8 +89,8 @@ public class Swerve extends SubsystemBase {
         
     }
 
-    public void drive(Translation2d translation, double rotation, boolean quickTurn, boolean zoom) {
-        SwerveModuleState[] swerveModuleStates =
+    public void drive(Translation2d translation, double rotation, boolean quickTurn, boolean zoom, boolean angletohop) {
+      if (angletohop == false){  SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                                     translation.getX(), 
@@ -80,8 +102,44 @@ public class Swerve extends SubsystemBase {
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], quickTurn, zoom, false);
-        }
-    }    
+        }}
+
+        if (angletohop == true){ 
+            if (allianceColor == Alliance.Red){
+     double y_SetPoint = 90;
+            
+     double y_Speed =  m_YController.calculate(getYaw().getDegrees(), y_SetPoint);
+            SwerveModuleState[] swerveModuleStates =
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                                    translation.getX(), 
+                                    translation.getY(), 
+                                    y_Speed, 
+                                    getYaw()));
+                               
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+
+        for(SwerveModule mod : mSwerveMods){
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], quickTurn, zoom, false);
+        }}
+        else if (allianceColor == Alliance.Blue){
+            double y_SetPoint = -90;
+                   
+            double y_Speed =  m_YController.calculate(getYaw().getDegrees(), y_SetPoint);
+                   SwerveModuleState[] swerveModuleStates =
+                   Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                       ChassisSpeeds.fromFieldRelativeSpeeds(
+                                           translation.getX(), 
+                                           translation.getY(), 
+                                           y_Speed, 
+                                           getYaw()));
+                                      
+               SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+       
+               for(SwerveModule mod : mSwerveMods){
+                   mod.setDesiredState(swerveModuleStates[mod.moduleNumber], quickTurn, zoom, false);
+               }}}
+    }
 
     public void DriveAutomatically(){
         for(SwerveModule mod : mSwerveMods){
@@ -91,10 +149,10 @@ public class Swerve extends SubsystemBase {
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
+      //  SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
         
         for(SwerveModule mod : mSwerveMods){
-            mod.setDesiredState(desiredStates[mod.moduleNumber], false, false, false);
+            mod.setDesiredState(desiredStates[mod.moduleNumber], false, false, true);
         }
     }    
 
@@ -161,6 +219,9 @@ public class Swerve extends SubsystemBase {
         updateOdometry();  
                     SmartDashboard.putString("Robot Pose", poseEstimator.getEstimatedPosition().toString());
                     SmartDashboard.putNumber("Pitch", getPitch());
+                    allianceColor = DriverStation.getAlliance();
+                    SmartDashboard.putString("Alliance Color", allianceColor.toString());
+
 
     }
 
@@ -180,3 +241,47 @@ public class Swerve extends SubsystemBase {
         return gyro.getPitch();
     }
 }
+/* 
+public void Update_Limelight_Tracking()
+{
+      // These numbers must be tuned for your Robot!  Be careful!
+      final double STEER_K = 0.03;                    // how hard to turn toward the target
+      final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
+      final double DESIRED_TARGET_AREA = 13.0;        // Area of the target when the robot reaches the wall
+      final double MAX_DRIVE = 0.7;                   // Simple speed limit so we don't drive too fast
+
+      double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+      double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+      double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+      double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+
+      if (tv < 1.0)
+      {
+        m_LimelightHasValidTarget = false;
+        m_LimelightDriveCommand = 0.0;
+        m_LimelightSteerCommand = 0.0;
+        return;
+      }
+
+ 
+
+        double heading_error = -tx;
+        double distance_error = -ty;
+        double steering_adjust = 0.0f;
+
+        if (tx > 1.0)
+        {
+                steering_adjust = KpAim*heading_error - min_aim_command;
+        }
+        else if (tx < -1.0)
+        {
+                steering_adjust = KpAim*heading_error + min_aim_command;
+        }
+
+        double distance_adjust = KpDistance * distance_error;
+
+        left_command += steering_adjust + distance_adjust;
+        right_command -= steering_adjust + distance_adjust;
+
+}
+} */

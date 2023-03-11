@@ -18,10 +18,11 @@ public class TeleopSwerve extends CommandBase {
     private DoubleSupplier rotationSup;
     private BooleanSupplier quickTurnSupplier;
     private BooleanSupplier zoomSupplier;
+    private BooleanSupplier hopperAngleSupplier;
 
     
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier quickTurnSupplier, BooleanSupplier zoomSupplier) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier quickTurnSupplier, BooleanSupplier zoomSupplier, BooleanSupplier hopperAngleSupplier) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -30,7 +31,7 @@ public class TeleopSwerve extends CommandBase {
         this.rotationSup = rotationSup;
         this.quickTurnSupplier = quickTurnSupplier;
         this.zoomSupplier = zoomSupplier;
-
+        this.hopperAngleSupplier = hopperAngleSupplier;
     }
 
     @Override
@@ -41,10 +42,11 @@ public class TeleopSwerve extends CommandBase {
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         boolean quickTurn = quickTurnSupplier.getAsBoolean();
         boolean zoom = zoomSupplier.getAsBoolean();
+        boolean hopperturn = hopperAngleSupplier.getAsBoolean();
         /* Drive */
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
-            rotationVal * Constants.Swerve.maxAngularVelocity, quickTurn, zoom
+            rotationVal * Constants.Swerve.maxAngularVelocity, quickTurn, zoom, hopperturn
             
         );
     }

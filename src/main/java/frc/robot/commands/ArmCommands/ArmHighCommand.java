@@ -27,6 +27,7 @@ public class ArmHighCommand extends CommandBase {
 
     public void end(boolean interrupted) {
         // when command ends, stop motors here
+        s_Arm.Stop();
 
     }
 

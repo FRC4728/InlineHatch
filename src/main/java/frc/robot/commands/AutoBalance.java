@@ -65,7 +65,7 @@ public class AutoBalance extends CommandBase {
     double y_Speed =  m_YController.calculate(m_robotDrive.getPitch(), y_SetPoint);
     
     Translation2d m_robotSpeeds = new Translation2d(-y_Speed, 0);
-    m_robotDrive.drive(m_robotSpeeds, 0, false, false);
+    m_robotDrive.drive(m_robotSpeeds, 0, false, false, false);
     System.out.println("Balance running");
 
 

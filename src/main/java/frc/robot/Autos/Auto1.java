@@ -49,6 +49,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class Auto1 extends SequentialCommandGroup {
 
@@ -61,12 +62,13 @@ public class Auto1 extends SequentialCommandGroup {
  
       eventMap.put("ArmHighConePlace", new SequentialCommandGroup(
         new ArmRetractCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() <= .7)),
-        new ArmHighCommand(s_Arm)
-            .until(() -> (s_Arm.getEncoderActuate() > 114.5) & (s_Arm.getEncoderActuate() < 115.5)),
+        new ParallelRaceGroup(
+          new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 109.5) &  (s_Arm.getEncoderActuate() < 110.5)),
+          new ArmPistonExtendCommand(s_Piston).beforeStarting(new WaitUntilCommand(() -> s_Arm.getEncoderActuate() > 40))),
         new ParallelRaceGroup(
             new ArmHighHoldCommand(s_Arm),
             new ParallelCommandGroup(
-                new ArmPistonExtendCommand(s_Piston).withTimeout(2),
+        //        new ArmPistonExtendCommand(s_Piston).until(null),
                 new ArmExtendCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 62) & (s_Extend.getEncoderExtend() > 58)))),
         new ParallelRaceGroup(
             new ArmHighHoldCommand(s_Arm),
@@ -84,7 +86,7 @@ public class Auto1 extends SequentialCommandGroup {
           new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)) ,
           new ExtendToGroundCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 46.7) & (s_Extend.getEncoderExtend() >45.7))
         ),
-        new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 36) & (s_Arm.getEncoderActuate() > 34)),
+        new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 25) & (s_Arm.getEncoderActuate() > 24)),
         new ArmStopCommand(s_Arm).withTimeout(.1),
         
         new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true)),
@@ -159,7 +161,7 @@ public class Auto1 extends SequentialCommandGroup {
         s_Swerve::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
         Constants.Swerve.swerveKinematics,
         new PIDConstants(1, 0, 0.15, .005),
-        new PIDConstants(1.2, 0, 0, .005),
+        new PIDConstants(1.3, 0, 0, .005),
         s_Swerve::setModuleStates,
         eventMap,
         true,

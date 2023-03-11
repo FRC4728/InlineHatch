@@ -2,12 +2,14 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.FaultID;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxLimitSwitch.Type;
 import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -25,6 +27,9 @@ public class ExtendingSubsystem extends SubsystemBase {
     private SparkMaxPIDController m_PIDControllerExtend;
 
     private RelativeEncoder m_encoderExtend;
+
+    private SparkMaxLimitSwitch m_fLimitSwitch;
+    private SparkMaxLimitSwitch m_rLimitSwitch;
 
     public double maxVel, maxAcc;
 
@@ -46,6 +51,10 @@ public class ExtendingSubsystem extends SubsystemBase {
 
         m_ArmExtend.setIdleMode(IdleMode.kBrake);
 
+
+        m_rLimitSwitch = m_ArmExtend.getReverseLimitSwitch(Type.kNormallyOpen);
+        m_fLimitSwitch = m_ArmExtend.getForwardLimitSwitch(Type.kNormallyOpen);
+        
         m_PIDControllerExtend = m_ArmExtend.getPIDController();
 
         m_PIDControllerExtend.setP(Constants.kArmExtendGains.kP);
@@ -53,8 +62,8 @@ public class ExtendingSubsystem extends SubsystemBase {
         m_PIDControllerExtend.setD(Constants.kArmExtendGains.kD);
         m_PIDControllerExtend.setFF(Constants.kArmExtendGains.kF);
 
-        maxVel = 2838;
-        maxAcc = 2838;
+        maxVel = 5676;
+        maxAcc = 5676;
 
         int smartMotionSlot = 0;
 
@@ -72,6 +81,12 @@ public class ExtendingSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (m_rLimitSwitch.isPressed()){
+            resetEncoders();
+        };
+SmartDashboard.putNumber("AcmeScrewposition", m_encoderExtend.getPosition());
+SmartDashboard.putNumber("AcmeScrewvelocity", m_encoderExtend.getVelocity());
+
     }
 
     public void ExtendOverride(double Speed) {

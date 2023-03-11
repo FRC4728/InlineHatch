@@ -86,7 +86,7 @@ public final class Constants {
         /** Meters per Second */
         public static final double maxSpeed = .23; //TODO: This must be tuned to specific robot
         /** Radians per Second */
-        public static final double maxAngularVelocity = .25; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = .35; //TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
@@ -187,7 +187,7 @@ public final class Constants {
 
     public static final Gains kArmGains = new Gains( .0000000005, 0, 0.005, 0.0002/*156 */, 0, 1.0);
     public static final Gains kArmGains1 = new Gains(.000005, 0, .005, 0.0002/*156 */, 0, 1.0);
-    public static final Gains kArmGains2 = new Gains(0, 0, 0.05, 0.0002/*156 */, 0, 1.0);
+    public static final Gains kArmGains2 = new Gains(0, 0, 0, 0/*156 */, 0, 1.0);
 
 
     public static final Gains kArmExtendGains = new Gains(0.25, 0.0, 0, 0, 0, 1.0);
