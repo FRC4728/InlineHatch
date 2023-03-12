@@ -5,6 +5,7 @@ import frc.robot.commands.ArmCommands.ArmHighCommand;
 import frc.robot.commands.ArmCommands.ArmHighCubeCommand;
 import frc.robot.commands.ArmCommands.ArmHighHoldCommand;
 import frc.robot.commands.ArmCommands.ArmStopCommand;
+import frc.robot.commands.ArmCommands.ArmToGroundAuto;
 import frc.robot.commands.ArmCommands.ArmToGroundCommand;
 import frc.robot.commands.ArmCommands.ArmToHomeCommand;
 import frc.robot.commands.ExtendCommands.ArmExtendCommand;
@@ -57,7 +58,7 @@ public class Auto1 extends SequentialCommandGroup {
       HopperSubsystem s_Hopper, PistonSubsystem s_Piston) {
     // Path Planner Path
     String robot_path = "2 Ball Top";
-    PathPlannerTrajectory TestPath = PathPlanner.loadPath(robot_path, new PathConstraints(3, 3));
+    PathPlannerTrajectory TestPath = PathPlanner.loadPath(robot_path, new PathConstraints(2.3, 2.3));
     HashMap<String, Command> eventMap = new HashMap<>();
  
       eventMap.put("ArmHighConePlace", new SequentialCommandGroup(
@@ -83,13 +84,17 @@ public class Auto1 extends SequentialCommandGroup {
        // new ArmToHomeCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > -7.5) & (s_Arm.getEncoderActuate() < -2.5)),
         //new ArmStopCommand(s_Arm).withTimeout(.05),
         new ParallelCommandGroup(  
-          new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)) ,
+          new ArmPistonRetractCommand(s_Piston).withTimeout(1.5) ,
           new ExtendToGroundCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 46.7) & (s_Extend.getEncoderExtend() >45.7))
+        ),    
+
+        new ParallelCommandGroup(
+          new SequentialCommandGroup(
+        new ArmToGroundAuto(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 22.7) & (s_Arm.getEncoderActuate() > 22.2)),
+        new ArmStopCommand(s_Arm).withTimeout(.1)),
+
+        new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true))
         ),
-        new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 25) & (s_Arm.getEncoderActuate() > 24)),
-        new ArmStopCommand(s_Arm).withTimeout(.1),
-        
-        new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true)),
         new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() < .7)
         //new ArmToHomeCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < -2.5) &  (s_Arm.getEncoderActuate() > -7.5)),
      //   new HandInCubeCommand(s_Hand).withTimeout(.3),
@@ -122,18 +127,18 @@ public class Auto1 extends SequentialCommandGroup {
              new ArmHighHoldCommand(s_Arm),
              new ArmExtendCommand(s_Extend).until(() -> ( s_Extend.getEncoderExtend() < 62) &  (s_Extend.getEncoderExtend() > 58))
         ),
-      //  new ParallelRaceGroup(
-        //    new ArmHighHoldCommand(s_Arm),
-          //  new ParallelRaceGroup(
-            //        new HandOutCubeCommand(s_Hand),
-              //      new WaitCommand(1)      
-           // )
-   // ),
-  //  new HandStopCommand(s_Hand).withTimeout(.1),
-    //new ParallelRaceGroup(
-      //      new ArmPistonRetractCommand(s_Piston).withTimeout(1.5),
-        //    new ArmRetractCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() <=.7))
-   // ),
+        new ParallelRaceGroup(
+            new ArmHighHoldCommand(s_Arm),
+            new ParallelRaceGroup(
+                    new HandOutCubeCommand(s_Hand),
+                    new WaitCommand(1)      
+            )
+    ),
+    new HandStopCommand(s_Hand).withTimeout(.1),
+    new ParallelRaceGroup(
+            new ArmPistonRetractCommand(s_Piston).withTimeout(1.5),
+            new ArmRetractCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() <=.7))
+    ),
     new ArmStopCommand(s_Arm).withTimeout(.05)));
 
    eventMap.put("ArmGroundCube", new SequentialCommandGroup(
@@ -161,7 +166,7 @@ public class Auto1 extends SequentialCommandGroup {
         s_Swerve::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
         Constants.Swerve.swerveKinematics,
         new PIDConstants(1, 0, 0.15, .005),
-        new PIDConstants(1.3, 0, 0, .005),
+        new PIDConstants(.6, 0, 0, .005),
         s_Swerve::setModuleStates,
         eventMap,
         true,

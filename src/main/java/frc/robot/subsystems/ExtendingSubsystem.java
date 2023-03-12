@@ -81,9 +81,9 @@ public class ExtendingSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (m_rLimitSwitch.isPressed()){
-            resetEncoders();
-        };
+     //   if (m_rLimitSwitch.isPressed()){
+       //     resetEncoders();
+        //};
 SmartDashboard.putNumber("AcmeScrewposition", m_encoderExtend.getPosition());
 SmartDashboard.putNumber("AcmeScrewvelocity", m_encoderExtend.getVelocity());
 
