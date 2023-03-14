@@ -71,16 +71,19 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.01; //TODO: This must be tuned to specific robot
+        //0.00082555 test 1 p value
+        public static final double driveKP = 0.00082555; //TODO: This must be tuned to specific robot
+
+       // public static final double driveKP = 0.01; //TODO: This must be tuned to specific robot
         public static final double driveKI = 0.0;
-        public static final double driveKD = 2;
+        public static final double driveKD = 0;
         public static final double driveKF = 1;
 
         /* Drive Motor Characterization Values 
          * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
-        public static final double driveKS = (0.32 / 12); //TODO: This must be tuned to specific robot
-        public static final double driveKV = (1.51 / 12);
-        public static final double driveKA = (0.27 / 12);
+        public static final double driveKS = (0.2479 / 12); //TODO: This must be tuned to specific robot
+        public static final double driveKV = (6.9836 / 12);
+        public static final double driveKA = (1.4986 / 12);
 
         /* Swerve Profiling Values */
         /** Meters per Second */
@@ -100,7 +103,7 @@ public final class Constants {
             public static final int canCoderID = 13;
             public static final int RelativeEncoder1 = 22;
             public static final int RelativeEncoder2 = 16;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees( 305.6);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees( 304.5);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -112,7 +115,7 @@ public final class Constants {
             public static final int canCoderID = 15;
             public static final int RelativeEncoder1 = 21;
             public static final int RelativeEncoder2 = 14;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(265.9);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(265);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -124,7 +127,7 @@ public final class Constants {
             public static final int canCoderID = 20;
             public static final int RelativeEncoder1 = 24;
             public static final int RelativeEncoder2 = 25;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(299.5);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(300.45);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -136,7 +139,7 @@ public final class Constants {
             public static final int canCoderID = 17;
             public static final int RelativeEncoder1 = 23;
             public static final int RelativeEncoder2 = 18;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(291.3);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(291);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -188,6 +191,7 @@ public final class Constants {
     public static final Gains kArmGains = new Gains( .0000000005, 0, 0.005, 0.0002/*156 */, 0, 1.0);
     public static final Gains kArmGains1 = new Gains(.000005, 0, .005, 0.0002/*156 */, 0, 1.0);
     public static final Gains kArmGains2 = new Gains(0, 0, 0, 0/*156 */, 0, 1.0);
+    public static final Gains kArmGains3 = new Gains(0.0000000002, 0, 0.005, 0.0002/*156 */, 0, 1.0);
 
 
     public static final Gains kArmExtendGains = new Gains(0.25, 0.0, 0, 0, 0, 1.0);

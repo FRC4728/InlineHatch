@@ -25,15 +25,16 @@ import frc.robot.Constants;
          
         CANSparkMax m_HandMotor = new CANSparkMax(Constants.ArmConstants.HandMotorID, MotorType.kBrushless);
         
-      private PowerDistribution m_PDP = new PowerDistribution(0, ModuleType.kCTRE);
+      private PowerDistribution m_PDP;
     
         private SparkMaxPIDController m_HandController;
       private double voltage;
         private RelativeEncoder m_HandEncoder;
 
         public Timer m_timer = new Timer();
-        public HandSubsystem() {
+        public HandSubsystem(PowerDistribution m_PDP) {
 
+          this.m_PDP = m_PDP;
             m_HandEncoder = m_HandMotor.getEncoder();            
    
             m_HandMotor.set(0);
@@ -105,7 +106,7 @@ import frc.robot.Constants;
 
          public void RunHandsOutCube(){
              //try
-                 m_HandController.setReference(-250, CANSparkMax.ControlType.kVelocity);
+                 m_HandController.setReference(-150, CANSparkMax.ControlType.kVelocity);
                //  processVariable = m_encoderActuate.getVelocity();
              }
 

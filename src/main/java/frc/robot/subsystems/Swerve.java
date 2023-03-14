@@ -56,7 +56,7 @@ public class Swerve extends SubsystemBase {
          SmartDashboard.putString("Alliance Color", allianceColor.toString());
 
 
-        m_YController = new PIDController(.005, 0, 0);
+        m_YController = new PIDController(.007, 0, 0);
 
          m_YController.setTolerance(0.05);
   
@@ -105,6 +105,8 @@ public class Swerve extends SubsystemBase {
         }}
 
         if (angletohop == true){ 
+
+            if  (quickTurn == true) {
             if (allianceColor == Alliance.Red){
      double y_SetPoint = 90;
             
@@ -138,7 +140,46 @@ public class Swerve extends SubsystemBase {
        
                for(SwerveModule mod : mSwerveMods){
                    mod.setDesiredState(swerveModuleStates[mod.moduleNumber], quickTurn, zoom, false);
-               }}}
+               }} 
+        }
+            else if (quickTurn == false){
+             if (allianceColor == Alliance.Red){
+                    double y_SetPoint = 90;
+                           
+                    double y_Speed =  m_YController.calculate(getYaw().getDegrees(), y_SetPoint);
+                           SwerveModuleState[] swerveModuleStates =
+                           Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                               ChassisSpeeds.fromFieldRelativeSpeeds(
+                                                   translation.getX(), 
+                                                   translation.getY(), 
+                                                   y_Speed, 
+                                                   getYaw()));
+                                              
+                       SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+               
+                       for(SwerveModule mod : mSwerveMods){
+                           mod.setDesiredState(swerveModuleStates[mod.moduleNumber], quickTurn, zoom, false);
+                       }}
+             else if (allianceColor == Alliance.Blue){
+                           double y_SetPoint = -90;
+                                  
+                           double y_Speed =  m_YController.calculate(getYaw().getDegrees(), y_SetPoint);
+                                  SwerveModuleState[] swerveModuleStates =
+                                  Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+                                      ChassisSpeeds.fromFieldRelativeSpeeds(
+                                                          translation.getX(), 
+                                                          translation.getY(), 
+                                                          y_Speed, 
+                                                          getYaw()));
+                                                     
+                              SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+                      
+                              for(SwerveModule mod : mSwerveMods){
+                                  mod.setDesiredState(swerveModuleStates[mod.moduleNumber], quickTurn, zoom, false);
+                              }} 
+            }
+
+            }
     }
 
     public void DriveAutomatically(){
@@ -221,6 +262,12 @@ public class Swerve extends SubsystemBase {
                     SmartDashboard.putNumber("Pitch", getPitch());
                     allianceColor = DriverStation.getAlliance();
                     SmartDashboard.putString("Alliance Color", allianceColor.toString());
+                    
+                    for(SwerveModule mod : mSwerveMods){
+                        SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
+                        SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
+                        SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+                    }
 
 
     }

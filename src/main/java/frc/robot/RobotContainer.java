@@ -25,9 +25,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -54,7 +56,6 @@ import frc.robot.commands.ArmCommands.ArmToHopperCommand;
 import frc.robot.commands.ArmCommands.ArmHighCommand;
 import frc.robot.commands.ArmCommands.ArmHighCubeCommand;
 import frc.robot.commands.ArmCommands.ArmHighHoldCommand;
-import frc.robot.commands.ArmCommands.ArmHomeHold;
 import frc.robot.commands.ArmCommands.ArmMiddleCommand;
 import frc.robot.commands.ArmCommands.ArmMiddleCubeCommand;
 import frc.robot.commands.ArmCommands.ArmMiddleHoldCommand;
@@ -84,6 +85,9 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+        private PowerDistribution m_PDP = new PowerDistribution(0, ModuleType.kCTRE);
+
     /* Controllers */
     private final Joystick driver = new Joystick(0);
     private final Joystick operator = new Joystick(1);
@@ -125,8 +129,8 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve();
     private final ArmSubsystem s_Arm = new ArmSubsystem();
     private final HopperSubsystem s_Hopper = new HopperSubsystem();
-    private final HandSubsystem s_Hand = new HandSubsystem();
-    private final ExtendingSubsystem s_Extend = new ExtendingSubsystem();
+    private final HandSubsystem s_Hand = new HandSubsystem(m_PDP);
+    private final ExtendingSubsystem s_Extend = new ExtendingSubsystem(m_PDP);
     private final PistonSubsystem s_Piston = new PistonSubsystem();
 
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -138,23 +142,23 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
         public RobotContainer() {
-       s_Swerve.setDefaultCommand(
-         new TeleopSwerve(
-                       s_Swerve,
-                     () -> -driver.getRawAxis(translationAxis), // * -driver.getRawAxis(translationAxis),
-                 () -> -driver.getRawAxis(strafeAxis), // * -driver.getRawAxis(strafeAxis),
-                    () -> -driver.getRawAxis(rotationAxis),                                                                                                                                                                                                                                                                                                
-                         () -> c_5.getAsBoolean(),
-                      () -> c_6.getAsBoolean(),
-                      () ->c_10.getAsBoolean()));
+   //    s_Swerve.setDefaultCommand(
+     //    new TeleopSwerve(
+       //                s_Swerve,
+         //            () -> -driver.getRawAxis(translationAxis), // * -driver.getRawAxis(translationAxis),
+           //      () -> -driver.getRawAxis(strafeAxis), // * -driver.getRawAxis(strafeAxis),
+             //       () -> -driver.getRawAxis(rotationAxis),                                                                                                                                                                                                                                                                                                
+               //          () -> c_5.getAsBoolean(),
+                 //     () -> c_6.getAsBoolean(),
+                   //  () ->c_10.getAsBoolean()));
     
        s_Extend.setDefaultCommand(new ExtendOverride(
                 s_Extend,
-               () ->   -driver.getRawAxis(3)));
+               () ->   -driver.getRawAxis(4)));
 
-       // s_Arm.setDefaultCommand(new ArmOverride(
-         //   s_Arm,
-           //     () ->   -driver.getRawAxis(1)));
+        s_Arm.setDefaultCommand(new ArmOverride(
+            s_Arm,
+                () ->   -driver.getRawAxis(1)));
 
         m_chooser.setDefaultOption("OneBallAuto", new Auto1(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
          m_chooser.addOption("DoNothingAuto", new DoNothingAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
@@ -282,7 +286,7 @@ public class RobotContainer {
        return new SequentialCommandGroup(
                   new ArmRetractCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() <= 1)),
                  new ParallelRaceGroup(
-                  new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 109.5) &  (s_Arm.getEncoderActuate() < 110.5)),
+                  new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 114.5) &  (s_Arm.getEncoderActuate() < 115.5)),
                   new ArmPistonExtendCommand(s_Piston).beforeStarting(new WaitUntilCommand(() -> s_Arm.getEncoderActuate() > 40))),
                 new ParallelCommandGroup(
                       //  new ArmHighHoldCommand(s_Arm),
@@ -328,7 +332,7 @@ public class RobotContainer {
         return new SequentialCommandGroup(
                 new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)),
                 new ArmRetractCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() <= 1)),
-                new ArmMiddleCubeCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 89.5) &  (s_Arm.getEncoderActuate() < 90.5)),
+                new ArmMiddleCubeCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 84.5) &  (s_Arm.getEncoderActuate() < 85.5)),
                 new ArmHighHoldCommand(s_Arm)
                 );
                    
@@ -388,8 +392,10 @@ public class RobotContainer {
                                 ),
                        new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 23.7) & (s_Arm.getEncoderActuate() > 23)),
                        new ArmStopCommand(s_Arm).withTimeout(.1),
-                       new ExtendToGroundCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 47) & (s_Extend.getEncoderExtend() >46)),
-                       new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true)),
+                       new ParallelCommandGroup(
+                        new ExtendToGroundCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 49) & (s_Extend.getEncoderExtend() >47.8)),
+                        new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true))
+                        ),
                        new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() <= 1),
                        new ArmToHomeCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < -2.5) &  (s_Arm.getEncoderActuate() > -7.5)),
                        new HandInCubeCommand(s_Hand).withTimeout(.3),

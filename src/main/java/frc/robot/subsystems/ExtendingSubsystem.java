@@ -14,7 +14,9 @@ import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -23,7 +25,7 @@ public class ExtendingSubsystem extends SubsystemBase {
     // The motors on the left side of the drive.
 
     CANSparkMax m_ArmExtend = new CANSparkMax(Constants.ArmConstants.ArmExtenderID, MotorType.kBrushless);
-
+    PowerDistribution m_PDP;
     private SparkMaxPIDController m_PIDControllerExtend;
 
     private RelativeEncoder m_encoderExtend;
@@ -35,8 +37,8 @@ public class ExtendingSubsystem extends SubsystemBase {
 
     double processVariable;
 
-    public ExtendingSubsystem() {
-
+    public ExtendingSubsystem(PowerDistribution m_PDP) {
+        this.m_PDP = m_PDP;
         m_encoderExtend = m_ArmExtend.getEncoder();
        //  m_ArmExtend.setSoftLimit(SoftLimitDirection.kForward, 65);
        //  m_ArmExtend.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -85,13 +87,13 @@ public class ExtendingSubsystem extends SubsystemBase {
        //     resetEncoders();
         //};
 SmartDashboard.putNumber("AcmeScrewposition", m_encoderExtend.getPosition());
-SmartDashboard.putNumber("AcmeScrewvelocity", m_encoderExtend.getVelocity());
+//SmartDashboard.putNumber("AcmeScrewCurrent", m_PDP.getCurrent(9));
 
     }
 
     public void ExtendOverride(double Speed) {
 
-        m_ArmExtend.set(Speed / 2);
+        m_ArmExtend.set(Speed);
 
     }
 
@@ -117,7 +119,7 @@ SmartDashboard.putNumber("AcmeScrewvelocity", m_encoderExtend.getVelocity());
     }
 
     public void ExtendToGround() {
-        m_PIDControllerExtend.setReference(46.3, ControlType.kPosition);
+        m_PIDControllerExtend.setReference(48.3, ControlType.kPosition);
         // m_PIDControllerExtend.setReference(joystickButton6, ControlType.kDutyCycle);
     }
 

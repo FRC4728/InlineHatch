@@ -26,7 +26,7 @@ public class SwerveModule {
     private TalonFX mDriveMotor;
     private DutyCycleEncoder angleEncoder;
 
-   // SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
         this.moduleNumber = moduleNumber;
@@ -65,25 +65,25 @@ public class SwerveModule {
      SmartDashboard.putBoolean("quickTurn", quickTurn);
         if (Auto == true){
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-            mDriveMotor.set(ControlMode.Velocity, velocity);//, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
+            mDriveMotor.set(ControlMode.Velocity, velocity/2, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
     
         }
       else if (quickTurn == false & zoom == false) {
 
         
            double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-            mDriveMotor.set(ControlMode.Velocity, velocity/2);//, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
+            mDriveMotor.set(ControlMode.Velocity, velocity/4, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
     }
     else if (zoom == true){
         
         double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-        mDriveMotor.set(ControlMode.Velocity, velocity/1);//, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
+        mDriveMotor.set(ControlMode.Velocity, velocity/2, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
     
     }
     else{
         
        double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
-        mDriveMotor.set(ControlMode.Velocity, velocity/4);//, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
+        mDriveMotor.set(ControlMode.Velocity, velocity/8, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
    
     }
     }

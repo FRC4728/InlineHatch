@@ -149,7 +149,7 @@ public class ArmSubsystem extends SubsystemBase {
     public void ActuateUp() {
 
       //  m_PIDControllerActuate.setReference(110.5, CANSparkMax.ControlType.kSmartMotion, 0, .15, ArbFFUnits.kPercentOut);
-        m_PIDControllerActuate.setReference(110, CANSparkMax.ControlType.kSmartMotion, 0, .075, ArbFFUnits.kPercentOut);
+        m_PIDControllerActuate.setReference(115, CANSparkMax.ControlType.kSmartMotion, 0, .075, ArbFFUnits.kPercentOut);
 
     }
     public void ActuateUpCube() {
@@ -197,7 +197,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void ActuateGroundAuto() {
 
-        m_PIDControllerActuate.setReference(22.5, CANSparkMax.ControlType.kSmartMotion, 0, .1, ArbFFUnits.kPercentOut);
+        m_PIDControllerActuate.setReference(21.7, CANSparkMax.ControlType.kSmartMotion, 0, .1, ArbFFUnits.kPercentOut);
         processVariable = m_encoderActuate.getPosition();
 
     }
@@ -220,7 +220,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
     public void ActuateMiddleCube() {
-        m_PIDControllerActuate.setReference(90, CANSparkMax.ControlType.kSmartMotion, 0, .12, ArbFFUnits.kPercentOut);
+        m_PIDControllerActuate.setReference(85, CANSparkMax.ControlType.kSmartMotion, 0, .12, ArbFFUnits.kPercentOut);
 
     }
     

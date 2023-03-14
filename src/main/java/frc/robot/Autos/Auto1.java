@@ -64,7 +64,7 @@ public class Auto1 extends SequentialCommandGroup {
       eventMap.put("ArmHighConePlace", new SequentialCommandGroup(
         new ArmRetractCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() <= .7)),
         new ParallelRaceGroup(
-          new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 109.5) &  (s_Arm.getEncoderActuate() < 110.5)),
+          new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 114.5) &  (s_Arm.getEncoderActuate() < 115.5)),
           new ArmPistonExtendCommand(s_Piston).beforeStarting(new WaitUntilCommand(() -> s_Arm.getEncoderActuate() > 40))),
         new ParallelRaceGroup(
             new ArmHighHoldCommand(s_Arm),
@@ -85,12 +85,12 @@ public class Auto1 extends SequentialCommandGroup {
         //new ArmStopCommand(s_Arm).withTimeout(.05),
         new ParallelCommandGroup(  
           new ArmPistonRetractCommand(s_Piston).withTimeout(1.5) ,
-          new ExtendToGroundCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 46.7) & (s_Extend.getEncoderExtend() >45.7))
+          new ExtendToGroundCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 48.7) & (s_Extend.getEncoderExtend() >47.7))
         ),    
 
         new ParallelCommandGroup(
           new SequentialCommandGroup(
-        new ArmToGroundAuto(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 22.7) & (s_Arm.getEncoderActuate() > 22.2)),
+        new ArmToGroundAuto(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 22) & (s_Arm.getEncoderActuate() > 21.4)),
         new ArmStopCommand(s_Arm).withTimeout(.1)),
 
         new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true))
@@ -165,8 +165,8 @@ public class Auto1 extends SequentialCommandGroup {
         s_Swerve::getPose,
         s_Swerve::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
         Constants.Swerve.swerveKinematics,
-        new PIDConstants(1, 0, 0.15, .005),
-        new PIDConstants(.6, 0, 0, .005),
+        new PIDConstants(1.5, 0, 0.15, .005),
+        new PIDConstants(1.3, 0, 0, .005),
         s_Swerve::setModuleStates,
         eventMap,
         true,
