@@ -52,12 +52,12 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-public class Auto1 extends SequentialCommandGroup {
+public class BottomAuto extends SequentialCommandGroup {
 
-  public Auto1(Swerve s_Swerve, ArmSubsystem s_Arm, HandSubsystem s_Hand, ExtendingSubsystem s_Extend,
+  public BottomAuto(Swerve s_Swerve, ArmSubsystem s_Arm, HandSubsystem s_Hand, ExtendingSubsystem s_Extend,
       HopperSubsystem s_Hopper, PistonSubsystem s_Piston) {
     // Path Planner Path
-    String robot_path = "2 Ball Top";
+    String robot_path = "BottomAuto";
     PathPlannerTrajectory TestPath = PathPlanner.loadPath(robot_path, new PathConstraints(2.3, 2.3));
     HashMap<String, Command> eventMap = new HashMap<>();
  
@@ -90,7 +90,7 @@ public class Auto1 extends SequentialCommandGroup {
 
         new ParallelCommandGroup(
           new SequentialCommandGroup(
-        new ArmToGroundAuto(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 22) & (s_Arm.getEncoderActuate() > 21.4)),
+        new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 23.6) & (s_Arm.getEncoderActuate() > 23)),
         new ArmStopCommand(s_Arm).withTimeout(.1)),
 
         new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true))
@@ -141,19 +141,12 @@ public class Auto1 extends SequentialCommandGroup {
     ),
     new ArmStopCommand(s_Arm).withTimeout(.05)));
 
-   eventMap.put("ArmGroundCube", new SequentialCommandGroup(
-                                new ParallelCommandGroup(  
-                                    new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)) ,
-                                    new ArmRetractCommand(s_Extend).until (() -> (s_Extend.getEncoderExtend() < .7))
-                                ),
-                       new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 36) & (s_Arm.getEncoderActuate() > 34)),
-                       new ArmStopCommand(s_Arm).withTimeout(.1),
-                       new ExtendToGroundCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 46) & (s_Extend.getEncoderExtend() >44)),
-                       new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true)),
-                       new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() < .7),
-                       new ArmToHomeCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < -2.5) &  (s_Arm.getEncoderActuate() > -7.5)),
-                       new HandInCubeCommand(s_Hand).withTimeout(.3),
-                       new ArmStopCommand(s_Arm).withTimeout(.05)
+   eventMap.put("ArmHome", new SequentialCommandGroup(
+                                  new ParallelCommandGroup(
+                                          new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)),
+                                          new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() <= 1)),
+                                  new ArmToHomeCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < -2.5) & (s_Arm.getEncoderActuate() > -7.5)),
+                                  new ArmStopCommand(s_Arm).withTimeout(.1)
    
                        ) );
    

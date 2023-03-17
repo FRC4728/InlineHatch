@@ -25,6 +25,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -41,12 +42,14 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Autos.Auto1;
+import frc.robot.Autos.TwoBallTopAuto;
 import frc.robot.Autos.DoNothingAuto;
 import frc.robot.Autos.PlaceAndBackUpAutoLow;
 import frc.robot.Autos.PlaceandBackUpAutoHigh;
 import frc.robot.Autos.TestAuto;
+import frc.robot.Autos.BottomAuto;
 import frc.robot.Autos.ChargeStationAuto;
+import frc.robot.Autos.ChargeTopAuto;
 import frc.robot.commands.*;
 import frc.robot.commands.ArmCommands.ArmOverride;
 import frc.robot.commands.ArmCommands.ArmStopCommand;
@@ -142,30 +145,32 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
         public RobotContainer() {
-   //    s_Swerve.setDefaultCommand(
-     //    new TeleopSwerve(
-       //                s_Swerve,
-         //            () -> -driver.getRawAxis(translationAxis), // * -driver.getRawAxis(translationAxis),
-           //      () -> -driver.getRawAxis(strafeAxis), // * -driver.getRawAxis(strafeAxis),
-             //       () -> -driver.getRawAxis(rotationAxis),                                                                                                                                                                                                                                                                                                
-               //          () -> c_5.getAsBoolean(),
-                 //     () -> c_6.getAsBoolean(),
-                   //  () ->c_10.getAsBoolean()));
+       s_Swerve.setDefaultCommand(
+         new TeleopSwerve(
+                       s_Swerve,
+                     () -> -driver.getRawAxis(translationAxis), // * -driver.getRawAxis(translationAxis),
+                 () -> -driver.getRawAxis(strafeAxis), // * -driver.getRawAxis(strafeAxis),
+                    () -> -driver.getRawAxis(rotationAxis),                                                                                                                                                                                                                                                                                                
+                         () -> c_5.getAsBoolean(),
+                      () -> c_6.getAsBoolean(),
+                     () ->c_10.getAsBoolean()));
     
        s_Extend.setDefaultCommand(new ExtendOverride(
                 s_Extend,
-               () ->   -driver.getRawAxis(4)));
+               () ->   -driver.getRawAxis(3)));
 
-        s_Arm.setDefaultCommand(new ArmOverride(
-            s_Arm,
-                () ->   -driver.getRawAxis(1)));
+     //   s_Arm.setDefaultCommand(new ArmOverride(
+       //     s_Arm,
+         //       () ->   -driver.getRawAxis(1)));
 
-        m_chooser.setDefaultOption("OneBallAuto", new Auto1(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
-         m_chooser.addOption("DoNothingAuto", new DoNothingAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
-         m_chooser.addOption("PlaceAndBackUpAutoHigh", new PlaceandBackUpAutoHigh(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
-         m_chooser.addOption("PlaceAndBackUpAutolow", new PlaceAndBackUpAutoLow(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
-         m_chooser.addOption("ChargeStationAuto", new ChargeStationAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
+        m_chooser.setDefaultOption("Two Piece Top", new TwoBallTopAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
+         m_chooser.addOption("DoNothing", new DoNothingAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
+         m_chooser.addOption("PlaceAndBackUpHigh", new PlaceandBackUpAutoHigh(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
+         m_chooser.addOption("PlaceAndBackUplow", new PlaceAndBackUpAutoLow(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
+         m_chooser.addOption("ChargeStation", new ChargeStationAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
          m_chooser.addOption("TestAuto", new TestAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
+         m_chooser.addOption("1.5 Piece, Then Charge, Top", new ChargeTopAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
+         m_chooser.addOption("Bottom 1.5 Piece", new BottomAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
 
 
         // Put the chooser on the dashboard+

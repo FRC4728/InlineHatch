@@ -9,7 +9,7 @@ import frc.robot.Constants;
 public class HopperSubsystem extends SubsystemBase {
     
     private final DoubleSolenoid m_doubleSolenoid = 
-    new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.HopConstants.HopPCMForward, Constants.HopConstants.HopPCMBackwards);
+    new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.HopConstants.HopPCMForward, Constants.HopConstants.HopPCMBackwards);
 
   public HopperSubsystem() {
 
