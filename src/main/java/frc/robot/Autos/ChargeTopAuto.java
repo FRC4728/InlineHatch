@@ -90,8 +90,8 @@ public class ChargeTopAuto extends SequentialCommandGroup {
 
         new ParallelCommandGroup(
           new SequentialCommandGroup(
-        new ArmToGroundAuto(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 22) & (s_Arm.getEncoderActuate() > 21.4)),
-        new ArmStopCommand(s_Arm).withTimeout(.1)),
+            new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 24.3) & (s_Arm.getEncoderActuate() > 23.3)),
+            new ArmStopCommand(s_Arm).withTimeout(.1)),
 
         new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true))
         ),

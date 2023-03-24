@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -20,8 +21,12 @@ import frc.robot.subsystems.Swerve;
 //if in radiands, divide by 360 and multiply by two PI
 
 public class AutoBalance extends CommandBase {
+  double reversed;
+  double funnyreversed;
+  double totalrotation;
+  Translation2d m_robotSpeeds = new Translation2d(0, 0);
+  private final PIDController m_XController;
 
-  private final PIDController m_YController;
   private final Swerve m_robotDrive;
 
   /** Creates a new SwerveWithPIDY. */
@@ -30,9 +35,9 @@ public class AutoBalance extends CommandBase {
   {
 
 
-    m_YController = new PIDController(0.005, 0, 0);
+    m_XController = new PIDController(0.4, 0, 0.004);
 
-    m_YController.setTolerance(0.05);
+    m_XController.setTolerance(.05);
 
 
 
@@ -60,16 +65,68 @@ public class AutoBalance extends CommandBase {
      //y setpoint is the target roll of the robot which we want to be 0 so the robot targets level
      //will have to adjust the set point in degrees based off on the pitch of the robot at level. 
      //if your gyro isn't completley flat you would change the setpoint to what the gyro reads out
-     //when it is flat. 
-    double y_SetPoint = 0;
-    double y_Speed =  m_YController.calculate(m_robotDrive.getPitch(), y_SetPoint);
+     //when it is flat. m
+
+  // double roborotationpitch = Math.cos(m_robotDrive.getYaw().getRadians());
+    //double roborotationroll = Math.abs(0)
+    //double totalrotation = Math.cos(roborotation *m_robotDrive.getPitch())+ (m_robotDrive.getRoll() * Math.PI)/180);
+   // SmartDashboard.putNumber("Inclination", totalrotation);
+
+  totalrotation = m_robotDrive.getPitch();
+     double inclination = Math.atan(Math.sqrt((Math.tan(m_robotDrive.getRoll()) * Math.tan(m_robotDrive.getRoll())) +
+     (Math.tan(m_robotDrive.getPitch()) * Math.tan(m_robotDrive.getPitch())) 
+     ));
+
+
+
+    double X_SetPoint = 1;
+    double X_Speed =  m_XController.calculate(inclination, X_SetPoint);
+
     
-    Translation2d m_robotSpeeds = new Translation2d(-y_Speed, 0);
+ //   double Y_SetPoint = 0;
+  //  double Y_Speed =  m_YController.calculate(m_robotDrive.getRoll(), Y_SetPoint);
+    
+
+    double X_Rotate =  ((((Math.cos(m_robotDrive.getPose().getRotation().getRadians())))*((Math.cos(m_robotDrive.getPose().getRotation().getRadians()))))
+    * (((Math.cos(m_robotDrive.getPose().getRotation().getRadians())))/ (Math.abs(Math.cos(m_robotDrive.getPose().getRotation().getRadians())))));
+   
+    if  (Math.cos(m_robotDrive.getPose().getRotation().getRadians()) >= 0 ) {
+     reversed = 1;
+    }
+
+    if  (Math.cos(m_robotDrive.getPose().getRotation().getRadians()) < 0) {
+       reversed = -1;
+      }
+    
+      if (m_robotDrive.getPitch() >= 0) {
+        funnyreversed = -1;
+      }
+
+      if (m_robotDrive.getPitch() < 0) {
+        funnyreversed = 1;
+      }
+
+SmartDashboard.putNumber("totalRotation", totalrotation);
+
+    double Y_Rotate = Math.cos(m_robotDrive.getPose().getRotation().getRadians());
+   
+     // if(totalrotation < -11){
+     m_robotSpeeds = new Translation2d(-.1, 0);
+   //if(totalrotation > 7){
+     // m_robotSpeeds = new Translation2d(.04, 0);
+   // }
+
+   ////   if(totalrotation >= -11){
+       // end(true);
+    //}
+   //   (X_Rotate*(-X_Speed)) + (Y_Rotate *(-Y_Speed)) 
+    //   ,0);
+
     m_robotDrive.drive(m_robotSpeeds, 0, false, false, false);
     System.out.println("Balance running");
 
 
-    
+
     
 
   }
@@ -78,14 +135,16 @@ public class AutoBalance extends CommandBase {
   @Override
   public void end(boolean interrupted) 
   {
-    
+    m_robotDrive.drive(new Translation2d(0, 0), .01, false, false, false);
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_YController.atSetpoint() == true )
-           return true;
+    if(totalrotation >= -10){
+      return true;
+  }
     return false;
   }
 }

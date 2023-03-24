@@ -96,7 +96,7 @@ public class Swerve extends SubsystemBase {
                                     translation.getX(), 
                                     translation.getY(), 
                                     rotation, 
-                                    getYaw()));
+                                    poseEstimator.getEstimatedPosition().getRotation()));
                                
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
@@ -186,6 +186,10 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.driveSlowly();
         }
+    }
+
+    public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        setModuleStates(Constants.Swerve.swerveKinematics.toSwerveModuleStates(chassisSpeeds));
     }
 
     /* Used by SwerveControllerCommand in Auto */
@@ -286,6 +290,11 @@ public class Swerve extends SubsystemBase {
     public double getPitch()
     {
         return gyro.getPitch();
+    }
+
+    public double getRoll()
+    {
+        return gyro.getRoll();
     }
 }
 /* 

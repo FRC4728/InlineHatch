@@ -1,6 +1,7 @@
 package frc.robot.Autos;
 
 import frc.robot.Constants;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.ArmCommands.ArmHighCommand;
 import frc.robot.commands.ArmCommands.ArmHighCubeCommand;
 import frc.robot.commands.ArmCommands.ArmHighHoldCommand;
@@ -79,8 +80,8 @@ public class ChargeStationAuto extends SequentialCommandGroup {
             )),
             new ParallelCommandGroup(
               new ArmPistonRetractCommand(s_Piston).withTimeout(1.4),
-              new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() < .7)),
-      new ArmToHomeCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < -2.5) & (s_Arm.getEncoderActuate() > -7.5)),
+              new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() < 1)),
+      new ArmToHomeCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < .5) & (s_Arm.getEncoderActuate() > -.5)),
       new ArmStopCommand(s_Arm).withTimeout(.1)
        )
       );
@@ -104,10 +105,15 @@ public class ChargeStationAuto extends SequentialCommandGroup {
     // 5. Add some init and wrap-up, and return everything
     addCommands(
         new SequentialCommandGroup(
-            // new InstantCommand(() ->
-            // swerveSubsystem.resetOdometry(TestPath.getInitialPose())),
+        //     new InstantCommand(() ->
+          //   swerveSubsystem.resetOdometry(TestPath.getInitialPose())),
             fullAuto,
-            new InstantCommand(() -> s_Swerve.stopModules())));
+        //    new InstantCommand(() -> s_Swerve.drive(new Translation2d(.1, 0), 0, false, false, false)),
+          //  new WaitCommand(2),
+         //   new InstantCommand(() -> s_Swerve.drive(new Translation2d(-.1, 0), 0, false, false, false)),
+         //   new WaitCommand(1),
+            new InstantCommand(() -> s_Swerve.stopModules())),
+            new AutoBalance(s_Swerve));
 
     // new InstantCommand(() -> swerveSubsystem.getPose()));
   }

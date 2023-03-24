@@ -90,8 +90,8 @@ public class BottomAuto extends SequentialCommandGroup {
 
         new ParallelCommandGroup(
           new SequentialCommandGroup(
-        new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 23.6) & (s_Arm.getEncoderActuate() > 23)),
-        new ArmStopCommand(s_Arm).withTimeout(.1)),
+            new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 24.3) & (s_Arm.getEncoderActuate() > 23.3)),
+            new ArmStopCommand(s_Arm).withTimeout(.1)),
 
         new HandInCubeCommand(s_Hand).until(() -> (s_Hand.getvoltageCube() == true))
         ),
@@ -141,14 +141,15 @@ public class BottomAuto extends SequentialCommandGroup {
     ),
     new ArmStopCommand(s_Arm).withTimeout(.05)));
 
-   eventMap.put("ArmHome", new SequentialCommandGroup(
-                                  new ParallelCommandGroup(
-                                          new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)),
-                                          new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() <= 1)),
-                                  new ArmToHomeCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < -2.5) & (s_Arm.getEncoderActuate() > -7.5)),
-                                  new ArmStopCommand(s_Arm).withTimeout(.1)
-   
-                       ) );
+    eventMap.put("ArmHome", new SequentialCommandGroup(
+              //new InstantCommand(() -> s_Arm.Stop()).withTimeout(.1),
+              new HandStopCommand(s_Hand).withTimeout(.05),
+              new ParallelCommandGroup(
+                      new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)),
+                      new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() <= 1)),
+                      new ArmToGroundCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < 24.3) & (s_Arm.getEncoderActuate() > 23.3)),
+                      new ArmStopCommand(s_Arm).withTimeout(.1)
+       ) );
    
 
     // 4. Construct command to follow trajectory
