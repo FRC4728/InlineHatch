@@ -137,7 +137,7 @@
         "x": 4.58886652240568,
         "y": 4.935519820724596
       },
-      "holonomicAngle": 91.50410297116588,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -152,15 +152,15 @@
     {
       "anchorPoint": {
         "x": 3.35768158472184,
-        "y": 4.65
+        "y": 4.7
       },
       "prevControl": {
         "x": 3.7910010941090246,
-        "y": 4.677658692088545
+        "y": 4.727658692088545
       },
       "nextControl": {
         "x": 2.910218362004421,
-        "y": 4.621438517698888
+        "y": 4.6714385176988875
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -176,15 +176,15 @@
     },
     {
       "anchorPoint": {
-        "x": 2.3,
-        "y": 4.4
+        "x": 2.2,
+        "y": 4.35
       },
       "prevControl": {
-        "x": 2.9160200291340743,
-        "y": 4.514191681374816
+        "x": 3.260014241396005,
+        "y": 4.7046972726424094
       },
       "nextControl": null,
-      "holonomicAngle": 168.6,
+      "holonomicAngle": 164.6029650849002,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -199,21 +199,5 @@
       }
     }
   ],
-  "maxVelocity": 4.0,
-  "maxAcceleration": 4.0,
-  "isReversed": null,
-  "markers": [
-    {
-      "position": 0.01,
-      "names": [
-        "ArmHighCubeRetract"
-      ]
-    },
-    {
-      "position": 4.021818181818114,
-      "names": [
-        "ArmUp"
-      ]
-    }
-  ]
+  "markers": []
 }

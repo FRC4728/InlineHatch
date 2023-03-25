@@ -142,7 +142,7 @@ SmartDashboard.putNumber("totalRotation", totalrotation);
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(totalrotation >= -10){
+    if(totalrotation >= -13.5){
       return true;
   }
     return false;

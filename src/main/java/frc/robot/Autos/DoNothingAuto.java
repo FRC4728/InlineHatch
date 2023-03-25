@@ -74,8 +74,8 @@ public class DoNothingAuto extends SequentialCommandGroup {
         s_Swerve::getPose,
         s_Swerve::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
         Constants.Swerve.swerveKinematics,
-        new PIDConstants(.1, 0, .01),
-        new PIDConstants(.1, 0, .01),
+        new PIDConstants(0, 0, .01),
+        new PIDConstants(0, 0, .01),
         s_Swerve::setModuleStates,
         eventMap,
         s_Swerve);
@@ -86,7 +86,7 @@ public class DoNothingAuto extends SequentialCommandGroup {
     // 5. Add some init and wrap-up, and return everything
     addCommands(
       new SequentialCommandGroup(
-          new ArmHighCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > 114.5) & (s_Arm.getEncoderActuate() < 115.5)),
+          new ArmHighCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > 109.5) & (s_Arm.getEncoderActuate() < 110.5)),
         new ParallelRaceGroup(
             new ArmHighHoldCommand(s_Arm),
             new ParallelCommandGroup(
@@ -102,7 +102,8 @@ public class DoNothingAuto extends SequentialCommandGroup {
               new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)),
               new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() < .7)),
       new ArmToHomeCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < -2.5) & (s_Arm.getEncoderActuate() > -7.5)),
-      new ArmStopCommand(s_Arm).withTimeout(.1)));
+      new ArmStopCommand(s_Arm).withTimeout(.1)),
+      fullAuto);
 
     // new InstantCommand(() -> swerveSubsystem.getPose()));
   }

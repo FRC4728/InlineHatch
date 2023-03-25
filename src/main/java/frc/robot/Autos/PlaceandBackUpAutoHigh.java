@@ -64,7 +64,7 @@ public class PlaceandBackUpAutoHigh extends SequentialCommandGroup {
 
     eventMap.put("High Arm Cube", 
     new SequentialCommandGroup(
-        new ArmHighCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > 114.5) & (s_Arm.getEncoderActuate() < 115.5)),
+        new ArmHighCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > 109.5) & (s_Arm.getEncoderActuate() < 110.5)),
       new ParallelRaceGroup(
           new ArmHighHoldCommand(s_Arm),
           new ParallelCommandGroup(

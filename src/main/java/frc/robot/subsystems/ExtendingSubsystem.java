@@ -101,6 +101,11 @@ SmartDashboard.putNumber("AcmeScrewposition", m_encoderExtend.getPosition());
         m_ArmExtend.set(-.2);
     }
 
+    
+    public void ExtendButton() {
+        m_ArmExtend.set(.2);
+    }
+
     public void Extend() {
         // resetEncoders();
         m_PIDControllerExtend.setReference(60, ControlType.kPosition, 0, 0, ArbFFUnits.kPercentOut);
