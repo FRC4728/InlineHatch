@@ -65,12 +65,14 @@ public class ChargeStationAuto extends SequentialCommandGroup {
       eventMap.put("ArmHighConePlace", new SequentialCommandGroup(
         new ArmRetractCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() <= .7)),
         new ParallelRaceGroup(
-          new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 109.5) &  (s_Arm.getEncoderActuate() < 110.5)),
+          new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 115.5) &  (s_Arm.getEncoderActuate() < 116.5)),
           new ArmPistonExtendCommand(s_Piston).beforeStarting(new WaitUntilCommand(() -> s_Arm.getEncoderActuate() > 40))),
         new ParallelRaceGroup(
             new ArmHighHoldCommand(s_Arm),
             new ParallelCommandGroup(
         //        new ArmPistonExtendCommand(s_Piston).until(null),
+        new WaitCommand(1),
+
                 new ArmExtendCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() < 62) & (s_Extend.getEncoderExtend() > 58)))),
         new ParallelRaceGroup(
             new ArmHighHoldCommand(s_Arm),

@@ -64,7 +64,7 @@ public class PlaceAndBackUpAutoLow extends SequentialCommandGroup {
 
     eventMap.put("High Arm Cube", 
     new SequentialCommandGroup(
-        new ArmHighCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > 109.5) & (s_Arm.getEncoderActuate() < 110.5)),
+        new ArmHighCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > 115.5) & (s_Arm.getEncoderActuate() < 116.5)),
       new ParallelRaceGroup(
           new ArmHighHoldCommand(s_Arm),
           new ParallelCommandGroup(
@@ -79,8 +79,8 @@ public class PlaceAndBackUpAutoLow extends SequentialCommandGroup {
           new ParallelCommandGroup(
             new ArmPistonRetractCommand(s_Piston).until(() -> (s_Piston.PistonArmExtended() == Value.kReverse)),
             new ArmRetractCommand(s_Extend).until (() -> s_Extend.getEncoderExtend() < .7)),
-    new ArmToHomeCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < -2.5) & (s_Arm.getEncoderActuate() > -7.5)),
-    new ArmStopCommand(s_Arm).withTimeout(.1)));
+            new ArmToHomeCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < .5) & (s_Arm.getEncoderActuate() > -.5)),
+            new ArmStopCommand(s_Arm).withTimeout(.1)));
 
    // eventMap.put("IntakeOff", new IntakeOffCommand(m_IntakeSubsystem));
 

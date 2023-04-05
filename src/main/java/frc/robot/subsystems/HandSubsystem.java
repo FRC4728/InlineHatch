@@ -126,7 +126,7 @@ import frc.robot.Constants;
 
       public boolean getvoltage(){
 
-         if (voltage > 22
+         if (voltage > 24
           & m_timer.get() >= 1.3){
            // SmartDashboard.putBoolean("true", true);
             return true;

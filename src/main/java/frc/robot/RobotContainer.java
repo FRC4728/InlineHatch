@@ -49,6 +49,7 @@ import frc.robot.Autos.PlaceandBackUpAutoHigh;
 import frc.robot.Autos.TestAuto;
 import frc.robot.Autos.BottomAuto;
 import frc.robot.Autos.ChargeStationAuto;
+import frc.robot.Autos.ChargeStationAutoBlue;
 import frc.robot.Autos.ChargeTopAuto;
 import frc.robot.commands.*;
 import frc.robot.commands.ArmCommands.ArmOverride;
@@ -170,7 +171,7 @@ public class RobotContainer {
          m_chooser.addOption("PlaceAndBackUpHigh", new PlaceandBackUpAutoHigh(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
          m_chooser.addOption("PlaceAndBackUplow", new PlaceAndBackUpAutoLow(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
          m_chooser.addOption("ChargeStation", new ChargeStationAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
-         m_chooser.addOption("TestAuto", new TestAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
+         m_chooser.addOption("ChargeStationBlue", new ChargeStationAutoBlue(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
          m_chooser.addOption("1.5 Piece, Then Charge, Top", new ChargeTopAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
          m_chooser.addOption("Bottom 1.5 Piece", new BottomAuto(s_Swerve, s_Arm, s_Hand, s_Extend, s_Hopper, s_Piston));
 
@@ -293,7 +294,7 @@ public class RobotContainer {
        return new SequentialCommandGroup(
                   new ArmRetractCommand(s_Extend).until(() -> (s_Extend.getEncoderExtend() <= 1)),
                  new ParallelRaceGroup(
-                  new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 109.5) &  (s_Arm.getEncoderActuate() < 110.5)),
+                  new ArmHighCommand(s_Arm).until(() ->(s_Arm.getEncoderActuate() > 115.5) &  (s_Arm.getEncoderActuate() < 116.5)),
                   new ArmPistonExtendCommand(s_Piston).beforeStarting(new WaitUntilCommand(() -> s_Arm.getEncoderActuate() > 40))),
                 new ParallelCommandGroup(
                       //  new ArmHighHoldCommand(s_Arm),
@@ -385,13 +386,14 @@ public class RobotContainer {
                 ),
                 new ArmToHomeCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < .5) & (s_Arm.getEncoderActuate() > -.5)),
                 new HopperOut(s_Hopper).until (() -> (s_Hopper.HopperDown() == Value.kForward)),
-                new ArmToHopperCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < -9.5) & (s_Arm.getEncoderActuate() > -10.5) ),
+                new ArmToHopperCommand(s_Arm).until (() -> (s_Arm.getEncoderActuate() < -10) & (s_Arm.getEncoderActuate() > -11) ),
                 new HandInConeCommand(s_Hand).until(() ->  s_Hand.getvoltage()),
                 new ArmToHomeCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() < .5) &  (s_Arm.getEncoderActuate() > -.5)),
+             new ParallelCommandGroup(
                 new HandInConeCommand(s_Hand).withTimeout(.6),
                 new ArmStopCommand(s_Arm).withTimeout(.2),
                 new HopperIn(s_Hopper).until (() -> s_Hopper.HopperDown() == Value.kReverse)
-                );
+      ) );
         }
         public Command ToGround() {
                 return new SequentialCommandGroup(

@@ -20,7 +20,7 @@ import frc.robot.subsystems.Swerve;
 //TODO: check the unit of measurement for your roll, if degrees, leave the kp value for the PID controler, 
 //if in radiands, divide by 360 and multiply by two PI
 
-public class AutoBalance extends CommandBase {
+public class AutoBalanceBlue extends CommandBase {
   double reversed;
   double funnyreversed;
   double totalrotation;
@@ -31,7 +31,7 @@ public class AutoBalance extends CommandBase {
 
   /** Creates a new SwerveWithPIDY. */
 
-  public AutoBalance(Swerve robotDrive) 
+  public AutoBalanceBlue(Swerve robotDrive) 
   {
 
 
@@ -142,7 +142,7 @@ SmartDashboard.putNumber("totalRotation", totalrotation);
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(totalrotation >= -13.3){
+    if(totalrotation >= -13){
       return true;
   }
     return false;

@@ -86,7 +86,7 @@ public class DoNothingAuto extends SequentialCommandGroup {
     // 5. Add some init and wrap-up, and return everything
     addCommands(
       new SequentialCommandGroup(
-          new ArmHighCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > 109.5) & (s_Arm.getEncoderActuate() < 110.5)),
+          new ArmHighCommand(s_Arm).until(() -> (s_Arm.getEncoderActuate() > 115.5) & (s_Arm.getEncoderActuate() < 116.5)),
         new ParallelRaceGroup(
             new ArmHighHoldCommand(s_Arm),
             new ParallelCommandGroup(
